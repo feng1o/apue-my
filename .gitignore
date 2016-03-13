@@ -1,0 +1,6 @@
+#ingnored
+*.out
+/Debug
+*.o
+*.s
+

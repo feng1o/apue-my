@@ -1,9 +1,11 @@
 #!/bin/bash
 echo "git operation.........."
+echo " $ # $#"
 
-if [ $# >= 2 ]
+if [ $# -ge 2 ]
 then
     echo 'input error'
+    exit
 fi
 
 if [ $1 == 'push' ]

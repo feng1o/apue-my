@@ -8,7 +8,7 @@ all:$(SRC)
 
 .PHONY:clean
 clean:
-	rm -f  *.o  $(SRC)
+	rm -f  *.o  test*.txt  $(SRC)
 run:
 	./$(SRC)
 # include $(ROOT)/Make.libapue.inc

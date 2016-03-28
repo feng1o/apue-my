@@ -11,7 +11,7 @@ fi
 
 if [ $1 = 'push' ]
 then
-    echo 'push,please input commit -m '
+    echo 'push,please input the messages  for discriping your commit'
     read  msgcommit
     git  add -A
     git commit -m  ${msgcommit}

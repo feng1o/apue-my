@@ -1,19 +1,24 @@
-#include "apue.h"
 #include <setjmp.h>
+#include "stdio.h"
 #include <time.h>
+#include "unistd.h"
+#include "stdlib.h"
+#include "signal.h"
 
 static void						sig_usr1(int);
 static void						sig_alrm(int);
 static sigjmp_buf				jmpbuf;
 static volatile sig_atomic_t	canjump;
 
+void pr_mask(const char *);
+
 int
 main(void)
 {
 	if (signal(SIGUSR1, sig_usr1) == SIG_ERR)
-		err_sys("signal(SIGUSR1) error");
+		printf("signal(SIGUSR1) error");
 	if (signal(SIGALRM, sig_alrm) == SIG_ERR)
-		err_sys("signal(SIGALRM) error");
+		printf("signal(SIGALRM) error");
 
 	pr_mask("starting main: ");		/* {Prog prmask} */
 
@@ -29,8 +34,7 @@ main(void)
 		pause();
 }
 
-static void
-sig_usr1(int signo)
+static void sig_usr1(int signo)
 {
 	time_t	starttime;
 

@@ -1,9 +1,9 @@
+/*保护特定代码临界区，不被信号中断的实现方法*/
 /*************************************************************************
   > File Name: pr_mask.c
   > Author:lf
   > Mail: 
   > Created Time: Sun 03 Apr 2016 03:51:16 PM CST
-  > Funciton: 等待一个信号处理函数设置一个全局变量
  ************************************************************************/
 #include "signal.h" 
 #include "unistd.h"
@@ -38,44 +38,41 @@ void pr_mask(const char * str)
     errno = errno_save;
 }
 
-
-volatile sig_atomic_t	quitflag;	/* set nonzero by signal handler */
-
-static void sig_int(int signo)	/* one signal handler for SIGINT and SIGQUIT */
-{
-	if (signo == SIGINT)
-		printf("\ninterrupt\n");
-	else if (signo == SIGQUIT)
-		quitflag = 1;	/* set flag for main loop */
-}
-
 int main(void)
 {
-	sigset_t	newmask, oldmask, zeromask;
+	sigset_t	newmask, oldmask, waitmask;
+	pr_mask("program start: ");
+
 	if (signal(SIGINT, sig_int) == SIG_ERR)
 		printf("signal(SIGINT) error");
-	if (signal(SIGQUIT, sig_int) == SIG_ERR)
-		printf("signal(SIGQUIT) error");
-
-	sigemptyset(&zeromask);
+	sigemptyset(&waitmask);
+	sigaddset(&waitmask, SIGUSR1);
 	sigemptyset(&newmask);
-	sigaddset(&newmask, SIGQUIT);
-	/*
-	 * Block SIGQUIT and save current signal mask.
-	 */
+	sigaddset(&newmask, SIGINT);
+
+	// * Block SIGINT and save current signal mask.
 	if (sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
 		printf("SIG_BLOCK error");
-	while (quitflag == 0)
-		sigsuspend(&zeromask);
-	/*
-	 * SIGQUIT has been caught and is now blocked; do whatever.
-	 */
-	quitflag = 0;
-	/*
-	 * Reset signal mask which unblocks SIGQUIT.
-	 */
+
+	//* Critical region of code.
+	pr_mask("in critical region: ");
+
+	// * Pause, allowing all signals except SIGUSR1.
+	if (sigsuspend(&waitmask) != -1) //表示现在屏蔽waitmask的屏蔽字，解锁前面的屏蔽
+		printf("sigsuspend error");
+
+	pr_mask("after return from sigsuspend: ");
+
+	// * Reset signal mask which unblocks SIGINT.
 	if (sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
 		printf("SIG_SETMASK error");
-    printf("exit......\n");
+
+	// * And continue processing ...
+	pr_mask("program exit: ");
 	exit(0);
+}
+
+static void sig_int(int signo)
+{
+	pr_mask("\nin sig_int: ");
 }

@@ -1,4 +1,7 @@
-#include "apue.h"
+#include"stdio.h"
+#include"unistd.h"
+#include"signal.h"
+#include"stdlib.h"
 
 #define	BUFFSIZE	1024
 
@@ -8,7 +11,6 @@ sig_tstp(int signo)	/* signal handler for SIGTSTP */
 	sigset_t	mask;
 
 	/* ... move cursor to lower left corner, reset tty mode ... */
-
 	/*
 	 * Unblock SIGTSTP, since it's blocked while we're handling it.
 	 */
@@ -41,10 +43,10 @@ main(void)
 
 	while ((n = read(STDIN_FILENO, buf, BUFFSIZE)) > 0)
 		if (write(STDOUT_FILENO, buf, n) != n)
-			err_sys("write error");
+			printf("write error");
 
 	if (n < 0)
-		err_sys("read error");
+		printf("read error");
 
 	exit(0);
 }

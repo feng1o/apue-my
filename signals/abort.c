@@ -3,12 +3,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void
-abort(void)			/* POSIX-style abort() function */
+void abort(void)			/* POSIX-style abort() function */
 {
 	sigset_t			mask;
 	struct sigaction	action;
-
 	/* Caller can't ignore SIGABRT, if so reset to default */
 	sigaction(SIGABRT, NULL, &action);
 	if (action.sa_handler == SIG_IGN) {
@@ -31,4 +29,14 @@ abort(void)			/* POSIX-style abort() function */
 	sigprocmask(SIG_SETMASK, &mask, NULL);	/* just in case ... */
 	kill(getpid(), SIGABRT);				/* and one more time */
 	exit(1);	/* this should never be executed ... */
+}
+
+int main()
+{
+    printf("main\n");
+    pid_t pid;
+    if((pid = fork())<0)
+        printf("father .....\n");
+    abort();
+    exit(0);
 }

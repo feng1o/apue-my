@@ -1,10 +1,15 @@
+/************************************************************************
+  > File Name: pr_mask.c
+  > Author:lf
+  > Mail: 
+  > Created Time: Sun 03 Apr 2016 03:51:16 PM CST
+ ************************************************************************/
 #include	<sys/wait.h>
 #include	<errno.h>
 #include	<signal.h>
 #include	<unistd.h>
 
-int
-system(const char *cmdstring)	/* with appropriate signal handling */
+int system(const char *cmdstring)	/* with appropriate signal handling */
 {
 	pid_t				pid;
 	int					status;

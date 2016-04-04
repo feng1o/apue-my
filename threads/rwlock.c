@@ -1,4 +1,14 @@
-#include <stdlib.h>
+/*************************************************************************
+  > File Name: xx.c
+  > Author: 
+  > Mail: 
+  > Created Time: Mon 04 Apr 2016 05:01:05 PM CST
+  > Funciton:
+ ************************************************************************/
+#include "unistd.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "fcntl.h"
 #include <pthread.h>
 
 struct job {
@@ -17,8 +27,7 @@ struct queue {
 /*
  * Initialize a queue.
  */
-int
-queue_init(struct queue *qp)
+int queue_init(struct queue *qp)
 {
 	int err;
 
@@ -34,8 +43,7 @@ queue_init(struct queue *qp)
 /*
  * Insert a job at the head of the queue.
  */
-void
-job_insert(struct queue *qp, struct job *jp)
+void job_insert(struct queue *qp, struct job *jp)
 {
 	pthread_rwlock_wrlock(&qp->q_lock);
 	jp->j_next = qp->q_head;
@@ -51,8 +59,7 @@ job_insert(struct queue *qp, struct job *jp)
 /*
  * Append a job on the tail of the queue.
  */
-void
-job_append(struct queue *qp, struct job *jp)
+void job_append(struct queue *qp, struct job *jp)
 {
 	pthread_rwlock_wrlock(&qp->q_lock);
 	jp->j_next = NULL;
@@ -68,8 +75,7 @@ job_append(struct queue *qp, struct job *jp)
 /*
  * Remove the given job from a queue.
  */
-void
-job_remove(struct queue *qp, struct job *jp)
+void job_remove(struct queue *qp, struct job *jp)
 {
 	pthread_rwlock_wrlock(&qp->q_lock);
 	if (jp == qp->q_head) {
@@ -91,8 +97,7 @@ job_remove(struct queue *qp, struct job *jp)
 /*
  * Find a job for the given thread ID.
  */
-struct job *
-job_find(struct queue *qp, pthread_t id)
+struct job * job_find(struct queue *qp, pthread_t id)
 {
 	struct job *jp;
 

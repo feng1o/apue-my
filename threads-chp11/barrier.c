@@ -1,10 +1,20 @@
-#include "apue.h"
+/*************************************************************************
+  > File Name: xx.c
+  > Author: 
+  > Mail: 
+  > Created Time: Mon 04 Apr 2016 05:01:05 PM CST
+  > Funciton:
+ ************************************************************************/
+#include "unistd.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "fcntl.h"
 #include <pthread.h>
 #include <limits.h>
 #include <sys/time.h>
 
-#define NTHR   8				/* number of threads */
-#define NUMNUM 8000000L			/* number of numbers to sort */
+#define NTHR   8				/*b number of threads */
+#define NUMNUM 80L			/* number of numbers to sort */
 #define TNUM   (NUMNUM/NTHR)	/* number to sort per thread */
 
 long nums[NUMNUM];
@@ -12,6 +22,7 @@ long snums[NUMNUM];
 
 pthread_barrier_t b;
 
+#define SOLARIS
 #ifdef SOLARIS
 #define heapsort qsort
 #else
@@ -22,8 +33,7 @@ extern int heapsort(void *, size_t, size_t,
 /*
  * Compare two long integers (helper function for heapsort)
  */
-int
-complong(const void *arg1, const void *arg2)
+int complong(const void *arg1, const void *arg2)
 {
 	long l1 = *(long *)arg1;
 	long l2 = *(long *)arg2;
@@ -39,9 +49,9 @@ complong(const void *arg1, const void *arg2)
 /*
  * Worker thread to sort a portion of the set of numbers.
  */
-void *
-thr_fn(void *arg)
+void * thr_fn(void *arg)
 {
+    printf(".....thread =%d...............\n\n",(int*)arg);
 	long	idx = (long)arg;
 
 	heapsort(&nums[idx], TNUM, sizeof(long), complong);
@@ -56,8 +66,7 @@ thr_fn(void *arg)
 /*
  * Merge the results of the individual sorted ranges.
  */
-void
-merge()
+void merge()
 {
 	long	idx[NTHR];
 	long	i, minidx, sidx, num;
@@ -77,8 +86,7 @@ merge()
 	}
 }
 
-int
-main()
+int main()
 {
 	unsigned long	i;
 	struct timeval	start, end;
@@ -92,7 +100,7 @@ main()
 	 */
 	srandom(1);
 	for (i = 0; i < NUMNUM; i++)
-		nums[i] = random();
+		nums[i] = random()% 1000 ;
 
 	/*
 	 * Create 8 threads to sort the numbers.
@@ -102,7 +110,7 @@ main()
 	for (i = 0; i < NTHR; i++) {
 		err = pthread_create(&tid, NULL, thr_fn, (void *)(i * TNUM));
 		if (err != 0)
-			err_exit(err, "can't create thread");
+			printf( "can't create thread");
 	}
 	pthread_barrier_wait(&b);
 	merge();

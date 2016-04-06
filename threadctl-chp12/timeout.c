@@ -1,10 +1,33 @@
-#include "apue.h"
+/*************************************************************************
+  > File Name: xx.c
+  > Author: 
+  > Mail: 
+  > Created Time: Mon 04 Apr 2016 05:01:05 PM CST
+  > Funciton:
+ ************************************************************************/
+#include "unistd.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "fcntl.h"
 #include <pthread.h>
 #include <time.h>
 #include <sys/time.h>
 
 extern int makethread(void *(*)(void *), void *);
 
+int makethread( void *(*fun)(void *), void *arg )
+{
+    pthread_t tid;
+    pthread_attr_t   attr;
+
+    if( pthread_attr_init( &attr ) )
+        printf("error init  thread attr\n");
+    if(!pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED))    
+        if(pthread_create(&tid, &attr, fun, arg))
+             printf("create detached pthread ok!\n");
+    pthread_attr_destroy(&attr);
+    return 0;
+}
 struct to_info {
 	void	      (*to_fn)(void *);	/* function */
 	void           *to_arg;			/* argument */
@@ -54,7 +77,7 @@ timeout(const struct timespec *when, void (*func)(void *), void *arg)
 	clock_gettime(CLOCK_REALTIME, &now);
 	if ((when->tv_sec > now.tv_sec) ||
 	  (when->tv_sec == now.tv_sec && when->tv_nsec > now.tv_nsec)) {
-		tip = malloc(sizeof(struct to_info));
+		tip = (struct to_info*) malloc(sizeof(struct to_info));
 		if (tip != NULL) {
 			tip->to_fn = func;
 			tip->to_arg = arg;
@@ -101,12 +124,12 @@ main(void)
 	struct timespec	when;
 
 	if ((err = pthread_mutexattr_init(&attr)) != 0)
-		err_exit(err, "pthread_mutexattr_init failed");
+		printf( "pthread_mutexattr_init failed");
 	if ((err = pthread_mutexattr_settype(&attr,
 	  PTHREAD_MUTEX_RECURSIVE)) != 0)
-		err_exit(err, "can't set recursive type");
+		printf( "can't set recursive type");
 	if ((err = pthread_mutex_init(&mutex, &attr)) != 0)
-		err_exit(err, "can't create recursive mutex");
+		printf( "can't create recursive mutex");
 
 	/* continue processing ... */
 

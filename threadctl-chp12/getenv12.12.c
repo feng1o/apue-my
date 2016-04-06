@@ -7,21 +7,19 @@ extern char **environ;
 
 pthread_mutex_t env_mutex;
 
-static pthread_once_t init_done = PTHREAD_ONCE_INIT;
+static pthread_once_t init_done = PTHREAD_ONCE_INIT; //once
 
-static void
-thread_init(void)
+static void thread_init(void)
 {
-	pthread_mutexattr_t attr;
+	pthread_mutexattr_t attr; //互斥量属性
 
-	pthread_mutexattr_init(&attr);
-	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-	pthread_mutex_init(&env_mutex, &attr);
+	pthread_mutexattr_init(&attr); //初始化一个互斥量属性
+	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE); //递归，类属性
+	pthread_mutex_init(&env_mutex, &attr); //动态初始化一个互斥量
 	pthread_mutexattr_destroy(&attr);
 }
 
-int
-getenv_r(const char *name, char *buf, int buflen)
+int getenv_r(const char *name, char *buf, int buflen)
 {
 	int i, len, olen;
 

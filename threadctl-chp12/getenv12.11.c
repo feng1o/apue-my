@@ -3,12 +3,11 @@
 
 #define MAXSTRINGSZ	4096
 
-static char envbuf[MAXSTRINGSZ];
+static char envbuf[MAXSTRINGSZ]; //不可重入的原因
 
 extern char **environ;
 
-char *
-getenv(const char *name)
+char * getenv(const char *name)
 {
 	int i, len;
 

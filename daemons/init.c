@@ -1,7 +1,11 @@
-#include "apue.h"
+#include "unistd.h"
+#include "stdlib.h"
+#include "signal.h"
 #include <syslog.h>
+#include "stdio.h"
 #include <fcntl.h>
 #include <sys/resource.h>
+#include "sys/stat.h"
 
 void
 daemonize(const char *cmd)
@@ -20,13 +24,13 @@ daemonize(const char *cmd)
 	 * Get maximum number of file descriptors.
 	 */
 	if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
-		err_quit("%s: can't get file limit", cmd);
+		printf(" can't get file limit");
 
 	/*
 	 * Become a session leader to lose controlling TTY.
 	 */
 	if ((pid = fork()) < 0)
-		err_quit("%s: can't fork", cmd);
+		printf(" can't fork");
 	else if (pid != 0) /* parent */
 		exit(0);
 	setsid();
@@ -38,9 +42,9 @@ daemonize(const char *cmd)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	if (sigaction(SIGHUP, &sa, NULL) < 0)
-		err_quit("%s: can't ignore SIGHUP", cmd);
+		printf(" can't ignore SIGHUP");
 	if ((pid = fork()) < 0)
-		err_quit("%s: can't fork", cmd);
+		printf(" can't fork");
 	else if (pid != 0) /* parent */
 		exit(0);
 
@@ -49,7 +53,7 @@ daemonize(const char *cmd)
 	 * we won't prevent file systems from being unmounted.
 	 */
 	if (chdir("/") < 0)
-		err_quit("%s: can't change directory to /", cmd);
+		printf(" can't change directory to /");
 
 	/*
 	 * Close all open file descriptors.

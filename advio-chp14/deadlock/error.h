@@ -105,8 +105,7 @@ err_msg(const char *fmt, ...)
  * Fatal error unrelated to a system call.
  * Print a message and terminate.
  */
-void
-err_quit(const char *fmt, ...)
+void err_quit(const char *fmt, ...)
 {
 	va_list		ap;
 

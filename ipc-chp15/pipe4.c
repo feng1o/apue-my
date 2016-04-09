@@ -2,8 +2,7 @@
 
 static void	sig_pipe(int);		/* our signal handler */
 
-int
-main(void)
+int main(void)
 {
 	int		n, fd1[2], fd2[2];
 	pid_t	pid;

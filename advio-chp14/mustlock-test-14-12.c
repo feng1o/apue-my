@@ -3,24 +3,23 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	int				fd;
 	pid_t			pid;
 	char			buf[5];
-	struct stat		statbuf;
+	struct stat		statbuf; //fd文件信息
 
 	if (argc != 2) {
 		fprintf(stderr, "usage: %s filename\n", argv[0]);
 		exit(1);
 	}
-	if ((fd = open(argv[1], O_RDWR | O_CREAT | O_TRUNC, FILE_MODE)) < 0)
+	if ((fd = open(argv[1], O_RDWR | O_CREAT | O_TRUNC, FILE_MODE)) < 0) //创建文件
 		err_sys("open error");
-	if (write(fd, "abcdef", 6) != 6)
+	if (write(fd, "abcdef", 6) != 6) //写入几个数据
 		err_sys("write error");
 
-	/* turn on set-group-ID and turn off group-execute */
+	/* turn on set-group-ID and turn off group-execute 开启强制锁 */
 	if (fstat(fd, &statbuf) < 0)
 		err_sys("fstat error");
 	if (fchmod(fd, (statbuf.st_mode & ~S_IXGRP) | S_ISGID) < 0)
@@ -31,7 +30,7 @@ main(int argc, char *argv[])
 	if ((pid = fork()) < 0) {
 		err_sys("fork error");
 	} else if (pid > 0) {	/* parent */
-		/* write lock entire file */
+		/* write lock entire file 父进程对全文件加锁了 */
 		if (write_lock(fd, 0, SEEK_SET, 0) < 0)
 			err_sys("write_lock error");
 

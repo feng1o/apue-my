@@ -71,4 +71,4 @@ main(void)
 		lockabyte("parent", fd, 0);
 	}
 	exit(0);
-}
+    

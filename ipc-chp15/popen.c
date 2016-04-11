@@ -1,5 +1,8 @@
-#include "apue.h"
 #include <errno.h>
+#include "limits.h"
+#include "stdlib.h"
+#include "unistd.h"
+#include "stdio.h"
 #include <fcntl.h>
 #include <sys/wait.h>
 
@@ -12,9 +15,7 @@ static pid_t	*childpid = NULL;
  * From our open_max(), {Prog openmax}.
  */
 static int		maxfd;
-
-FILE *
-popen(const char *cmdstring, const char *type)
+FILE * popen(const char *cmdstring, const char *type)
 {
 	int		i;
 	int		pfd[2];
@@ -29,8 +30,9 @@ popen(const char *cmdstring, const char *type)
 
 	if (childpid == NULL) {		/* first time through */
 		/* allocate zeroed out array for child pids */
-		maxfd = open_max();
-		if ((childpid = calloc(maxfd, sizeof(pid_t))) == NULL)
+		//maxfd = OPEN_MAX();
+        maxfd = 1024;
+		if ((childpid = (pid_t*)calloc(maxfd, sizeof(pid_t))) == NULL)
 			return(NULL);
 	}
 
@@ -84,8 +86,7 @@ popen(const char *cmdstring, const char *type)
 	return(fp);
 }
 
-int
-pclose(FILE *fp)
+int pclose(FILE *fp)
 {
 	int		fd, stat;
 	pid_t	pid;

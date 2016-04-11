@@ -49,8 +49,7 @@ translate(unsigned char c)
 	return(c);
 }
 
-int
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 	int					ifd, ofd, i, j, n, err, numop;
 	struct stat			sbuf;
@@ -134,7 +133,6 @@ main(int argc, char* argv[])
 					else
                         exit(1);
 				}
-
 				/*
 				 * A write is complete; mark the buffer as unused.
 				 */

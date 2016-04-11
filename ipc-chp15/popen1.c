@@ -1,24 +1,25 @@
-#include "apue.h"
+#include "stdio.h"
+#include "stdlib.h"
 #include <sys/wait.h>
 
-int
-main(void)
+#define MAXLINE 4096 
+int main(void)
 {
 	char	line[MAXLINE];
 	FILE	*fpin;
 
 	if ((fpin = popen("myuclc", "r")) == NULL)
-		err_sys("popen error");
+		printf("popen error");
 	for ( ; ; ) {
 		fputs("prompt> ", stdout);
 		fflush(stdout);
 		if (fgets(line, MAXLINE, fpin) == NULL)	/* read from pipe */
 			break;
 		if (fputs(line, stdout) == EOF)
-			err_sys("fputs error to pipe");
+			printf("fputs error to pipe");
 	}
 	if (pclose(fpin) == -1)
-		err_sys("pclose error");
+		printf("pclose error");
 	putchar('\n');
 	exit(0);
 }

@@ -1,5 +1,6 @@
-#include "apue.h"
 #include <ctype.h>
+#include "stdio.h"
+#include "stdlib.h"
 
 int
 main(void)
@@ -10,7 +11,7 @@ main(void)
 		if (isupper(c))
 			c = tolower(c);
 		if (putchar(c) == EOF)
-			err_sys("output error");
+			printf("output error");
 		if (c == '\n')
 			fflush(stdout);
 	}

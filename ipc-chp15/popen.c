@@ -30,8 +30,8 @@ FILE * popen(const char *cmdstring, const char *type)
 
 	if (childpid == NULL) {		/* first time through */
 		/* allocate zeroed out array for child pids */
-		//maxfd = OPEN_MAX();
-        maxfd = 1024;
+		//maxfd = open_max();
+        maxfd =  256;
 		if ((childpid = (pid_t*)calloc(maxfd, sizeof(pid_t))) == NULL)
 			return(NULL);
 	}

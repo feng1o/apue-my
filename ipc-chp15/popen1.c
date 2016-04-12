@@ -8,7 +8,7 @@ int main(void)
 	char	line[MAXLINE];
 	FILE	*fpin;
 
-	if ((fpin = popen("myuclc", "r")) == NULL)
+	if ((fpin = popen("./myuclc", "r")) == NULL) //一个程序:w
 		printf("popen error");
 	for ( ; ; ) {
 		fputs("prompt> ", stdout);

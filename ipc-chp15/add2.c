@@ -1,7 +1,11 @@
-#include "apue.h"
+#include "unistd.h"
+#include "string.h"
+#include "stdlib.h"
+#include "stdio.h"
+#include "fcntl.h"
+#define MAXLINE 4096
 
-int
-main(void)
+int main(void)
 {
 	int		n, int1, int2;
 	char	line[MAXLINE];
@@ -12,10 +16,10 @@ main(void)
 			sprintf(line, "%d\n", int1 + int2);
 			n = strlen(line);
 			if (write(STDOUT_FILENO, line, n) != n)
-				err_sys("write error");
+				printf("write error");
 		} else {
 			if (write(STDOUT_FILENO, "invalid args\n", 13) != 13)
-				err_sys("write error");
+				printf("write error");
 		}
 	}
 	exit(0);

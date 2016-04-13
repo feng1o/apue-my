@@ -1,8 +1,13 @@
-#include "slock.h"
 #include <stdlib.h>
+#include "semaphore.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
+
+struct slock{
+    sem_t*  semp;
+    char    name[_POSIX_NAME_MAX];
+}
 
 struct slock *
 s_alloc()

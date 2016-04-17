@@ -1,8 +1,13 @@
-#include "apue.h"
 #include <netdb.h>
+#include "error.h"
+#include "string.h"
+#include "stdlib.h"
+#include "unistd.h"
+#include "stdio.h"
 #include <errno.h>
 #include <syslog.h>
 #include <sys/socket.h>
+#include "daemonize.c"
 
 #define BUFLEN		128
 #define MAXADDRLEN	256
@@ -13,8 +18,7 @@
 
 extern int initserver(int, const struct sockaddr *, socklen_t, int);
 
-void
-serve(int sockfd)
+void serve(int sockfd)
 {
 	int				n;
 	socklen_t		alen;
@@ -23,8 +27,10 @@ serve(int sockfd)
 	char			abuf[MAXADDRLEN];
 	struct sockaddr	*addr = (struct sockaddr *)abuf;
 
-	set_cloexec(sockfd);
+//	set_cloexec(sockfd);
+
 	for (;;) {
+    printf(" listen .....before ");
 		alen = MAXADDRLEN;
 		if ((n = recvfrom(sockfd, buf, BUFLEN, 0, addr, &alen)) < 0) {
 			syslog(LOG_ERR, "ruptimed: recvfrom error: %s",
@@ -42,8 +48,7 @@ serve(int sockfd)
 	}
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	struct addrinfo	*ailist, *aip;
 	struct addrinfo	hint;
@@ -51,28 +56,31 @@ main(int argc, char *argv[])
 	char			*host;
 
 	if (argc != 1)
-		err_quit("usage: ruptimed");
+		printf("usage: ruptimed");
 	if ((n = sysconf(_SC_HOST_NAME_MAX)) < 0)
 		n = HOST_NAME_MAX;	/* best guess */
-	if ((host = malloc(n)) == NULL)
-		err_sys("malloc error");
+	if ((host = (char *)malloc(n)) == NULL)
+		printf("malloc error");
 	if (gethostname(host, n) < 0)
-		err_sys("gethostname error");
-	daemonize("ruptimed");
+		printf("gethostname error");
+	//daemonize("ruptimed");
 	memset(&hint, 0, sizeof(hint));
 	hint.ai_flags = AI_CANONNAME;
 	hint.ai_socktype = SOCK_DGRAM;
 	hint.ai_canonname = NULL;
 	hint.ai_addr = NULL;
 	hint.ai_next = NULL;
-	if ((err = getaddrinfo(host, "ruptime", &hint, &ailist)) != 0) {
+	if ((err = getaddrinfo("127.0.0.1", "ruptime", &hint, &ailist)) != 0) {
+    //需要加入、etc/service里面的  upd 
 		syslog(LOG_ERR, "ruptimed: getaddrinfo error: %s",
 		  gai_strerror(err));
+    printf("...exit..............\n");
 		exit(1);
 	}
 	for (aip = ailist; aip != NULL; aip = aip->ai_next) {
 		if ((sockfd = initserver(SOCK_DGRAM, aip->ai_addr,
 		  aip->ai_addrlen, 0)) >= 0) {
+    printf("ok ...............\n");
 			serve(sockfd);
 			exit(0);
 		}

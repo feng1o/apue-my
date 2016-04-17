@@ -1,7 +1,8 @@
-#include "apue.h"
 #include <netdb.h>
 #include <errno.h>
 #include <sys/socket.h>
+#include "unistd.h"
+#include "error.h"
 
 #define BUFLEN		128
 #define TIMEOUT		20
@@ -9,6 +10,7 @@
 void
 sigalrm(int signo)
 {
+    printf("sigalarm ...................\n");
 }
 
 void

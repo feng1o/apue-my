@@ -1,5 +1,5 @@
-#include "apue.h"
 #include <sys/msg.h>
+#include "error.h"
 
 #define MAXMSZ 512
 
@@ -8,8 +8,7 @@ struct mymesg {
 	char mtext[MAXMSZ];
 };
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	key_t key;
 	long qid;

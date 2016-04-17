@@ -1,9 +1,8 @@
-#include "apue.h"
 #include <sys/socket.h>
 #include <sys/un.h>
+#include "error.h"
 
-int
-main(void)
+int main(void)
 {
 	int fd, size;
 	struct sockaddr_un un;

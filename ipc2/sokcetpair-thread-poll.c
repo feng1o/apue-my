@@ -1,8 +1,8 @@
-#include "apue.h"
 #include <poll.h>
 #include <pthread.h>
 #include <sys/msg.h>
 #include <sys/socket.h>
+#include "error.h"
 
 #define NQ		3		/* number of queues */
 #define MAXMSZ	512		/* maximum message size */
@@ -18,12 +18,11 @@ struct mymesg {
 	char mtext[MAXMSZ];
 };
 
-void *
-helper(void *arg)
+void * helper(void *arg)
 {
 	int					n;
 	struct mymesg		m;
-	struct threadinfo	*tip = arg;
+	struct threadinfo	*tip = (struct threadinfo*)arg;
 
 	for(;;) {
 		memset(&m, 0, sizeof(m));
@@ -34,8 +33,7 @@ helper(void *arg)
 	}
 }
 
-int
-main()
+int main()
 {
 	int					i, n, err;
 	int					fd[2];

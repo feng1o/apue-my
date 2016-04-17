@@ -1,4 +1,0 @@
-  gcc ruptimed.c tellwait.h   error.h initsrv1.c daemonize.c  -o remoteuptimeserver1
-
-   gcc ruptime.c error.h  tellwait.h  tryconnect.c  -o client
-   history 2 >> serverdeply 
